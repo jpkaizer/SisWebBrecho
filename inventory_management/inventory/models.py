@@ -22,13 +22,6 @@ class Categoria(models.Model):
     def __str__(self):
         return self.nome
 
-class Categoria(models.Model):
-    nome = models.CharField(max_length=200)
-    class Meta:
-        verbose_name_plural = 'categorias'
-    def __str__(self):
-        return self.nome
-
 class Cliente(models.Model):
     nome = models.CharField(max_length=100)
     cpf = models.CharField(max_length=14, unique=True)
