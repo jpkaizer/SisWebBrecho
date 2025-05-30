@@ -1,0 +1,481 @@
+body {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.faixa-topo {
+    background-color: #F5E0C3;
+    padding: 15px 40px;
+}
+
+
+.logo-topo {
+    height: 60px;
+}
+
+
+.link-topo {
+    font-weight: 600;
+    color: #4B2614;
+    text-decoration: none;
+}
+
+.link-topo:hover {
+    color: #3a1f14;
+}
+
+
+.btn-marrom {
+    background-color: #4B2614;
+    color: white;
+    border-radius: 25px;
+    padding: 10px 30px;
+    font-weight: bold;
+    border: none;
+    text-decoration: none;
+}
+
+.btn-marrom:hover {
+    background-color: #3a1f14;
+    color: white;
+}
+
+
+.dashboard-container {
+    background-color: #4B2614;
+    color: white;
+    padding: 40px 30px;
+    min-height: calc(100vh - 100px);
+    width: 100vw;
+    box-sizing: border-box;
+}
+
+.dashboard-box {
+    border-radius: 30px;
+}
+
+.titulo-pagina {
+    text-align: center;
+    color: #F5E0C3;
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 30px;
+}
+
+
+.menu-dashboard {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 30px;
+}
+
+
+.dashboard-table {
+    background-color: white;
+    border-radius: 15px;
+    overflow: hidden;
+    width: 100%;
+}
+
+.dashboard-table th,
+.dashboard-table td {
+    vertical-align: middle;
+    color: #333;
+    font-size: 0.95rem;
+}
+
+/* Botões padrão */
+.btn-bege {
+    background-color: #F5E0C3;
+    color: #4B2614;
+    border: none;
+    border-radius: 30px;
+    padding: 10px 24px;
+    font-weight: bold;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 1rem;
+    transition: 0.3s;
+}
+
+.btn-bege:hover {
+    background-color: #e4d2b9;
+    color: #3a1f14;
+}
+
+
+.bottom-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-top: 40px;
+}
+
+
+@media (max-width: 768px) {
+    .menu-dashboard, .bottom-buttons {
+        justify-content: center;
+    }
+
+    .dashboard-table th, .dashboard-table td {
+        font-size: 0.85rem;
+    }
+
+    .btn-bege {
+        width: 100%;
+        text-align: center;
+    }
+}
+
+.navbar-container {
+    width: 100%;
+    background-color: #F5E0C3;
+    border-bottom-left-radius: 30px;
+    border-bottom-right-radius: 30px;
+    padding: 15px 40px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+}
+
+.logo-nav {
+    height: 60px;
+    border-radius: 12px;
+}
+
+.link-topo {
+    font-weight: 600;
+    color: #4B2614;
+    text-decoration: none;
+    font-size: 1rem;
+}
+
+.link-topo:hover {
+    color: #3a1f14;
+    text-decoration: underline;
+}
+
+
+.index-container {
+    background-color: #4B2614;
+    color: #F5E0C3;
+    height: calc(100vh - 100px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    text-align: center;
+    padding: 40px 20px;
+    border-radius: 40px; 
+    margin: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+
+.button-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    border-radius: 30px; 
+    padding: 20px;
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+
+.btn-bege {
+    background-color: #F5E0C3;
+    color: #4B2614;
+    border: none;
+    border-radius: 30px; 
+    padding: 12px 32px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    text-decoration: none;
+    min-width: 160px;
+    text-align: center;
+    transition: all 0.2s ease-in-out;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.btn-bege:hover {
+    background-color: #e4d2b9;
+    color: #3a1f14;
+    transform: scale(1.03);
+}
+
+@media (min-width: 576px) {
+    .button-group {
+        flex-direction: row;
+    }
+}
+/* Login */
+.login-container {
+    background-color: #F5E0C3;
+    border-radius: 30px;
+    padding: 50px 40px;
+    max-width: 600px;
+    margin: 80px auto;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.login-container h1 {
+    text-align: center;
+    margin-bottom: 35px;
+    font-size: 1.8rem;
+    color: #4B2614;
+}
+
+.form-control {
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.form-label {
+    font-weight: bold;
+    color: #4B2614;
+}
+
+.login-footer {
+    text-align: center;
+    margin-top: 20px;
+}
+
+@media (max-width: 768px) {
+    .login-container {
+        margin: 40px 15px;
+        padding: 30px 20px;
+    }
+}
+.logout-container {
+    background-color: #F5E0C3;
+    border-radius: 30px;
+    padding: 50px 40px;
+    max-width: 600px;
+    margin: 80px auto;
+    text-align: center;
+    color: #4B2614;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+}
+
+.logout-container h2 {
+    font-size: 1.8rem;
+    font-weight: bold;
+    margin-bottom: 25px;
+}
+
+.logout-container a {
+    color: #4B2614;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.logout-container a:hover {
+    text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+    .logout-container {
+        margin: 40px 15px;
+        padding: 30px 20px;
+    }
+}
+.signup-container {
+    background-color: #F5E0C3;
+    border-radius: 30px;
+    padding: 50px 40px;
+    max-width: 600px;
+    margin: 80px auto;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.signup-container h1 {
+    text-align: center;
+    margin-bottom: 35px;
+    font-size: 1.8rem;
+    color: #4B2614;
+}
+
+.signup-footer {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.signup-footer a {
+    font-weight: bold;
+    color: #4B2614;
+    text-decoration: none;
+}
+
+.signup-footer a:hover {
+    text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+    .signup-container {
+        margin: 40px 15px;
+        padding: 30px 20px;
+    }
+}
+
+.venda-container {
+    background-color: #F5E0C3;
+    border-radius: 30px;
+    padding: 40px 30px;
+    max-width: 720px;
+    margin: 80px auto;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.12);
+}
+
+.venda-container h1 {
+    text-align: center;
+    color: #4B2614;
+    font-size: 1.6rem;
+    margin-bottom: 30px;
+    font-weight: bold;
+}
+
+.form-group label {
+    font-weight: bold;
+    color: #4B2614;
+    margin-top: 15px;
+}
+
+.form-control {
+    border-radius: 12px;
+    background-color: #F9F5EC;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.form-btn {
+    text-align: center;
+    margin-top: 30px;
+}
+
+.erro-venda {
+    color: #a52828;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+@media (max-width: 768px) {
+    .venda-container {
+        margin: 40px 15px;
+        padding: 30px 20px;
+    }
+}
+.pedidos-container {
+    background-color: #4B2614;
+    color: white;
+    padding: 40px 30px;
+    width: 100vw;
+    min-height: calc(100vh - 100px);
+    box-sizing: border-box;
+    border-radius: 30px;
+}
+
+.pedidos-title {
+    text-align: center;
+    font-size: 2rem;
+    font-weight: bold;
+    color: #F5E0C3;
+    margin-bottom: 30px;
+}
+
+.pedidos-table {
+    background-color: white;
+    border-radius: 15px;
+    overflow: hidden;
+    width: 100%;
+}
+
+.pedidos-table th,
+.pedidos-table td {
+    vertical-align: middle;
+    color: #333;
+    font-size: 0.95rem;
+}
+
+@media (max-width: 768px) {
+    .pedidos-container {
+        padding: 30px 15px;
+    }
+
+    .pedidos-table th,
+    .pedidos-table td {
+        font-size: 0.85rem;
+    }
+}
+.item-form-container {
+    background-color: #F5E0C3;
+    border-radius: 30px;
+    padding: 40px 30px;
+    max-width: 600px;
+    margin: 80px auto;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.item-form-container h1 {
+    text-align: center;
+    color: #4B2614;
+    font-size: 1.6rem;
+    margin-bottom: 30px;
+}
+
+.btn-voltar {
+    margin-left: 30px;
+    margin-top: 30px;
+}
+
+@media (max-width: 768px) {
+    .item-form-container {
+        margin: 40px 15px;
+        padding: 30px 20px;
+    }
+    .btn-voltar {
+        margin-left: 15px;
+    }
+}
+.delete-container {
+    background-color: #F5E0C3;
+    border-radius: 30px;
+    padding: 40px 30px;
+    max-width: 600px;
+    margin: 80px auto;
+    text-align: center;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.delete-container h1 {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #4B2614;
+    margin-bottom: 20px;
+}
+
+.delete-container p {
+    color: #4B2614;
+    font-weight: 500;
+    margin-bottom: 30px;
+}
+
+.btn-deletar {
+    background-color: #a52828;
+    color: white;
+    border: none;
+    padding: 10px 30px;
+    border-radius: 25px;
+    font-weight: bold;
+}
+
+.btn-deletar:hover {
+    background-color: #841c1c;
+}
+
+@media (max-width: 768px) {
+    .delete-container {
+        margin: 40px 15px;
+        padding: 30px 20px;
+    }
+}

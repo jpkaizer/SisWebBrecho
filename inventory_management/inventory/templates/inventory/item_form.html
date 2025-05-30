@@ -1,20 +1,22 @@
 {% extends 'inventory/base.html' %}
 {% load crispy_forms_tags %}
 
+{% block content %}
+{% if request.META.HTTP_REFERER %}
+<div class="mb-4 ms-4">
+    <a href="{{ request.META.HTTP_REFERER }}" class="btn-marrom">Voltar</a>
+</div>
+{% endif %}
 
-{% block content%}
-    <a href="{% url 'dashboard' %}" class="btn btn-outline-primary my-3 mx-4">Voltar</a>
-    <div class="row">
-        <div class="col-11 col-md-4 mx-auto mt-5">
-            <h1>Item Inventário</h1>
+<div class="item-form-container">
+    <h1>Item de Inventário</h1>
 
-            <form method="POST">
-                {% csrf_token %}
-                {{ form|crispy }}
-                <div class="mt-3">
-                    <button class="btn btn-primary">Add Item</button>
-                </div>
-            </form>
+    <form method="POST">
+        {% csrf_token %}
+        {{ form|crispy }}
+        <div class="text-center mt-4">
+            <button type="submit" class="btn-marrom">Adicionar Item</button>
         </div>
-    </div>
-{% endblock content %}
+    </form>
+</div>
+{% endblock %}

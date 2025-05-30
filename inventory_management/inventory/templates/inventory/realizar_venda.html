@@ -1,0 +1,111 @@
+{% extends 'inventory/base.html' %}
+{% block content %}
+
+{% if request.META.HTTP_REFERER %}
+<div class="mb-4 ms-4">
+    <a href="{{ request.META.HTTP_REFERER }}" class="btn-marrom">Voltar</a>
+</div>
+{% endif %}
+<div class="venda-container">
+    <h1>Realizar Venda</h1>
+
+    {% if erro %}
+        <p class="erro-venda">{{ erro }}</p>
+    {% endif %}
+
+    <form method="POST">
+        {% csrf_token %}
+
+
+        <div class="form-group">
+            <label for="cliente">Cliente:</label>
+            <select name="cliente" id="cliente" class="form-control" required>
+                <option value="">Selecione o cliente</option>
+                {% for cliente in clientes %}
+                    <option value="{{ cliente.id }}">{{ cliente.nome }} - {{ cliente.cpf }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+
+        <div class="form-group row mt-3 align-items-end">
+            <div class="col-8">
+                <label for="item">Item:</label>
+                <select id="item" class="form-control">
+                    {% for item in itens %}
+                        <option value="{{ item.id }}" data-nome="{{ item.nome }}" data-preco="{{ item.preco }}" data-estoque="{{ item.quantidade }}">
+                            {{ item.nome }} (Estoque: {{ item.quantidade }})
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-2">
+                <label for="quantidade">Qtd:</label>
+                <input type="number" id="quantidade" class="form-control" min="1">
+            </div>
+            <div class="col-2">
+                <button type="button" onclick="adicionarItem()" class="btn btn-marrom" style="padding: 6px 12px; font-size: 0.9rem;">
+                    Adicionar
+                </button>
+
+            </div>
+        </div>
+
+
+
+        <div class="mt-4">
+            <h5>Itens Selecionados:</h5>
+            <ul id="itensSelecionados" class="list-group mb-3"></ul>
+        </div>
+
+
+        <input type="hidden" name="itens" id="itensInput">
+
+
+        <div class="form-btn">
+            <button type="submit" class="btn-marrom">Salvar Venda</button>
+        </div>
+    </form>
+</div>
+
+
+<script>
+    let lista = [];
+
+    function adicionarItem() {
+        const select = document.getElementById("item");
+        const itemId = select.value;
+        const nome = select.options[select.selectedIndex].getAttribute("data-nome");
+        const estoque = parseInt(select.options[select.selectedIndex].getAttribute("data-estoque"));
+        const preco = select.options[select.selectedIndex].getAttribute("data-preco");
+        const quantidade = parseInt(document.getElementById("quantidade").value);
+
+        if (!quantidade || quantidade <= 0) {
+            alert("Informe uma quantidade válida.");
+            return;
+        }
+
+        if (quantidade > estoque) {
+            alert("Quantidade superior ao estoque disponível.");
+            return;
+        }
+
+        lista.push({ item_id: itemId, nome: nome, quantidade: quantidade, preco: preco });
+        atualizarLista();
+    }
+
+    function atualizarLista() {
+        const ul = document.getElementById("itensSelecionados");
+        const hidden = document.getElementById("itensInput");
+        ul.innerHTML = "";
+        lista.forEach((item, index) => {
+            const li = document.createElement("li");
+            li.className = "list-group-item";
+            li.textContent = `${item.nome} - Quantidade: ${item.quantidade}`;
+            ul.appendChild(li);
+        });
+        hidden.value = JSON.stringify(lista);
+    }
+</script>
+
+{% endblock %}

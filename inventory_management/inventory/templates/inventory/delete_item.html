@@ -1,17 +1,19 @@
 {% extends 'inventory/base.html' %}
 
 {% block content %}
-    <div>
-        <a href="{% url 'dashboard' %}" class="btn btn-outline-primary my-3 mx-4">Voltar</a>
-        <div class="row">
-            <form method="POST" class="col-sm-11 col-md-4 mx-auto mt-5">
-                {% csrf_token %}
-                <h1 class="fw-light">Você tem certeza que quer deletar {{ item.nome }}</h1>
-                <p class="fw-light">Isso não poderá ser desfeito!</p>
-                <div>
-                    <button class="btn btn-danger">Deletar</button>
-                </div>
-            </form>
-        </div>
-    </div>
-{% endblock content %}
+{% if request.META.HTTP_REFERER %}
+<div class="mb-4 ms-4">
+    <a href="{{ request.META.HTTP_REFERER }}" class="btn-marrom">Voltar</a>
+</div>
+{% endif %}
+
+<div class="delete-container">
+    <form method="POST">
+        {% csrf_token %}
+        <h1>Tem certeza que deseja deletar <br><strong>{{ item.nome }}</strong>?</h1>
+        <p>Essa ação não poderá ser desfeita.</p>
+
+        <button type="submit" class="btn-deletar">Deletar</button>
+    </form>
+</div>
+{% endblock %}

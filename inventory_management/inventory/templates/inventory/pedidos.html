@@ -1,0 +1,49 @@
+{% extends 'inventory/base.html' %}
+{% load static %}
+
+{% block content %}
+{% if request.META.HTTP_REFERER %}
+<div class="mb-4 ms-4">
+    <a href="{{ request.META.HTTP_REFERER }}" class="btn-marrom">Voltar</a>
+</div>
+{% endif %}
+
+<div class="pedidos-container">
+    <h2 class="pedidos-title">PEDIDOS REGISTRADOS</h2>
+
+    <div class="table-responsive">
+        <table class="table pedidos-table table-striped table-bordered">
+            <thead class="table-light">
+                <tr>
+                    <th>ID</th>
+                    <th>Cliente</th>
+                    <th>Itens</th>
+                    <th>Valor Total</th>
+                    <th>Data</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if pedidos %}
+                    {% for pedido in pedidos %}
+                    <tr>
+                        <td>#{{ pedido.id }}</td>
+                        <td>{{ pedido.cliente.nome }}</td>
+                        <td>
+                            {% for item in pedido.itens.all %}
+                                {{ item.quantidade }}x {{ item.item.nome }}{% if not forloop.last %}, {% endif %}
+                            {% endfor %}
+                        </td>
+                        <td>R$ {{ pedido.total|floatformat:2 }}</td>
+                        <td>{{ pedido.data_venda|date:"d/m/Y H:i" }}</td>
+                    </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="5" class="text-center">Nenhum pedido registrado.</td>
+                    </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

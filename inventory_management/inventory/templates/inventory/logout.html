@@ -1,14 +1,18 @@
 {% extends 'inventory/base.html' %}
 
 {% block content %}
-	<div class="row">
-		<div class="col-11 col-md-4 mx-auto mt-5">
-			<h2>You Have Been Logged Out</h2>
-			<div class="border-top pt-3">
-				<small class="text-muted">
-					<a href="{% url 'login' %}">Log In Again</a>
-				</small>
-			</div>
-		</div>
-	</div>
-{% endblock content %}
+{% if request.META.HTTP_REFERER %}
+<div class="mb-4 ms-4">
+    <a href="{{ request.META.HTTP_REFERER }}" class="btn-marrom">Voltar</a>
+</div>
+{% endif %}
+
+<div class="logout-container">
+    <h2>Você está saindo!</h2>
+    <div class="border-top pt-3">
+        <small>
+            <a href="{% url 'login' %}">Entrar novamente</a>
+        </small>
+    </div>
+</div>
+{% endblock %}
