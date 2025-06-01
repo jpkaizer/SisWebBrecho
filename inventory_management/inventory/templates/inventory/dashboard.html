@@ -10,10 +10,10 @@
 
     <!-- Botões superiores -->
     <div class="menu-dashboard">
-        <a href="#" class="btn-bege">
+        <a href="/admin/inventory/inventoryitem/" class="btn-bege">
             <i class="bi bi-box-seam"></i> Produtos
         </a>
-        <a href="#" class="btn-bege">
+        <a href="{% url 'pagina_pedidos' %}" class="btn-bege">
             <i class="bi bi-receipt"></i> Pedidos
         </a>
     </div>
@@ -55,7 +55,7 @@
     <!-- Botões inferiores -->
     <div class="bottom-buttons">
         <a href="{% url 'realizar_venda' %}" class="btn-bege">Realizar Vendas</a>
-        <a href="#" class="btn-bege">Exportar Relatório</a>
+        <a href="{% url 'relatorio_semanal' %}" class="btn btn-bege">Exportar Relatório</a>
     </div>
 
 </div>

@@ -15,6 +15,7 @@
     <form method="post">
         {% csrf_token %}
         {{ form|crispy }}
+        <input type="hidden" name="next" value="{{ next|default:'/dashboard/' }}">
 
         <div class="text-center mt-4">
             <button class="btn btn-marrom" type="submit">Entrar</button>

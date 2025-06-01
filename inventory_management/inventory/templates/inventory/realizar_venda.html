@@ -1,111 +1,107 @@
 {% extends 'inventory/base.html' %}
+
 {% block content %}
 
-{% if request.META.HTTP_REFERER %}
-<div class="mb-4 ms-4">
-    <a href="{{ request.META.HTTP_REFERER }}" class="btn-marrom">Voltar</a>
-</div>
-{% endif %}
 <div class="venda-container">
-    <h1>Realizar Venda</h1>
+  <h1>Realizar Venda</h1>
 
-    {% if erro %}
-        <p class="erro-venda">{{ erro }}</p>
-    {% endif %}
+  {% if erro %}
+    <p class="erro-venda">{{ erro }}</p>
+  {% endif %}
 
-    <form method="POST">
-        {% csrf_token %}
+  <form id="vendaForm" method="POST">
+    {% csrf_token %}
 
+    <div class="form-group">
+      <label for="cliente">Cliente:</label>
+      <select name="cliente" id="cliente" class="form-control" required>
+        <option value="">Selecione</option>
+        {% for cliente in clientes %}
+          <option value="{{ cliente.id }}">{{ cliente.nome }}</option>
+        {% endfor %}
+      </select>
+    </div>
 
-        <div class="form-group">
-            <label for="cliente">Cliente:</label>
-            <select name="cliente" id="cliente" class="form-control" required>
-                <option value="">Selecione o cliente</option>
-                {% for cliente in clientes %}
-                    <option value="{{ cliente.id }}">{{ cliente.nome }} - {{ cliente.cpf }}</option>
-                {% endfor %}
-            </select>
-        </div>
-
-
-        <div class="form-group row mt-3 align-items-end">
-            <div class="col-8">
-                <label for="item">Item:</label>
-                <select id="item" class="form-control">
-                    {% for item in itens %}
-                        <option value="{{ item.id }}" data-nome="{{ item.nome }}" data-preco="{{ item.preco }}" data-estoque="{{ item.quantidade }}">
-                            {{ item.nome }} (Estoque: {{ item.quantidade }})
-                        </option>
-                    {% endfor %}
-                </select>
-            </div>
-            <div class="col-2">
-                <label for="quantidade">Qtd:</label>
-                <input type="number" id="quantidade" class="form-control" min="1">
-            </div>
-            <div class="col-2">
-                <button type="button" onclick="adicionarItem()" class="btn btn-marrom" style="padding: 6px 12px; font-size: 0.9rem;">
-                    Adicionar
-                </button>
-
-            </div>
-        </div>
+    <h3 class="mt-4">Itens</h3>
+    <div class="form-group row align-items-end">
+    <div class="col-8 pe-1"> <!-- Adiciona padding-end menor pra diminuir espaçamento -->
+      <label for="item" class="form-label">Item:</label>
+      <select id="item" class="form-control">
+        {% for item in itens %}
+          <option value="{{ item.id }}" data-nome="{{ item.nome }}" data-preco="{{ item.preco|default:'0.00' }}" data-estoque="{{ item.quantidade }}">
+            {{ item.nome }} (Estoque: {{ item.quantidade }})
+          </option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="col-2 px-1"> <!-- Adiciona padding-x menor -->
+      <label for="quantidade" class="form-label">Qtd:</label>
+      <input type="number" id="quantidade" class="form-control" min="1" placeholder="Qtd">
+    </div>
+    <div class="col-2 ps-1"> <!-- Adiciona padding-start menor -->
+      <button type="button" onclick="adicionarItem()"class="btn btn-marrom w-100 mt-4">ADD</button>
+    </div>
+  </div>
 
 
+    <h4 class="mt-4">Itens Selecionados:</h4>
+    <ul id="itensSelecionados" class="list-group mb-3"></ul>
 
-        <div class="mt-4">
-            <h5>Itens Selecionados:</h5>
-            <ul id="itensSelecionados" class="list-group mb-3"></ul>
-        </div>
+    <input type="hidden" name="itens" id="itensInput">
 
-
-        <input type="hidden" name="itens" id="itensInput">
-
-
-        <div class="form-btn">
-            <button type="submit" class="btn-marrom">Salvar Venda</button>
-        </div>
-    </form>
+    <div class="form-btn">
+      <button type="submit" class="btn btn-marrom">Salvar Venda</button>
+    </div>
+  </form>
 </div>
-
 
 <script>
-    let lista = [];
+  let lista = [];
+  let totalVenda = 0.00;
 
-    function adicionarItem() {
-        const select = document.getElementById("item");
-        const itemId = select.value;
-        const nome = select.options[select.selectedIndex].getAttribute("data-nome");
-        const estoque = parseInt(select.options[select.selectedIndex].getAttribute("data-estoque"));
-        const preco = select.options[select.selectedIndex].getAttribute("data-preco");
-        const quantidade = parseInt(document.getElementById("quantidade").value);
+  function adicionarItem() {
+    const select = document.getElementById("item");
+    const itemId = select.value;
+    const nome = select.options[select.selectedIndex].getAttribute("data-nome");
+    const estoque = parseInt(select.options[select.selectedIndex].getAttribute("data-estoque")) || 0;
+    const precoStr = select.options[select.selectedIndex].getAttribute("data-preco");
+    const preco = parseFloat(precoStr) || 0.00;
+    const quantidade = parseInt(document.getElementById("quantidade").value);
 
-        if (!quantidade || quantidade <= 0) {
-            alert("Informe uma quantidade válida.");
-            return;
-        }
-
-        if (quantidade > estoque) {
-            alert("Quantidade superior ao estoque disponível.");
-            return;
-        }
-
-        lista.push({ item_id: itemId, nome: nome, quantidade: quantidade, preco: preco });
-        atualizarLista();
+    if (!quantidade || quantidade <= 0) {
+      alert("Informe uma quantidade válida!");
+      return;
     }
 
-    function atualizarLista() {
-        const ul = document.getElementById("itensSelecionados");
-        const hidden = document.getElementById("itensInput");
-        ul.innerHTML = "";
-        lista.forEach((item, index) => {
-            const li = document.createElement("li");
-            li.className = "list-group-item";
-            li.textContent = `${item.nome} - Quantidade: ${item.quantidade}`;
-            ul.appendChild(li);
-        });
-        hidden.value = JSON.stringify(lista);
+    if (quantidade > estoque) {
+      alert("Estoque insuficiente!");
+      return;
     }
+
+    const subtotal = preco * quantidade;
+    totalVenda += subtotal;
+
+    lista.push({ item_id: itemId, nome: nome, quantidade: quantidade, preco: preco });
+    atualizarLista();
+  }
+
+  function atualizarLista() {
+    const ul = document.getElementById("itensSelecionados");
+    const hidden = document.getElementById("itensInput");
+    ul.innerHTML = "";
+    lista.forEach((item) => {
+      const li = document.createElement("li");
+      li.className = "list-group-item";
+      li.textContent = `${item.nome} - Quantidade: ${item.quantidade} - Subtotal: R$ ${(item.preco * item.quantidade).toFixed(2)}`;
+      ul.appendChild(li);
+    });
+    hidden.value = JSON.stringify(lista);
+  }
+
+  document.getElementById("vendaForm").addEventListener("submit", function(e) {
+    const hidden = document.getElementById("itensInput");
+    hidden.value = JSON.stringify(lista);
+  });
 </script>
 
 {% endblock %}

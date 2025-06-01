@@ -3,8 +3,19 @@ from django.urls import reverse_lazy
 from django.views.generic import TemplateView, View, CreateView, UpdateView, DeleteView
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib import messages
+from django.conf import settings
+from django.http import HttpResponse
 from .forms import UserRegisterForm, InventoryItemForm
-from .models import InventoryItem, Categoria
+from .models import InventoryItem, Categoria, Cliente, Venda, ItemVenda
+import datetime
+from django.db import transaction 
+from decimal import Decimal
+from openpyxl import Workbook
+import os
+
+import json
+
 
 class Index(TemplateView):
     template_name= 'inventory/index.html'
@@ -67,63 +78,42 @@ class DeleteItem(LoginRequiredMixin, DeleteView):
 
 class RealizarVenda(View):
     def get(self, request):
-        itens = ItemInventario.objects.filter(quantidade__gt=0, user=request.user)
+        itens = InventoryItem.objects.filter(quantidade__gt=0, user=request.user)
         clientes = Cliente.objects.all()
-        voltar_para = request.GET.get('next', '/dashboard/')
         return render(request, 'inventory/realizar_venda.html', {
             'itens': itens,
-            'clientes': clientes,
-            'voltar_para': voltar_para
+            'clientes': clientes
         })
 
     def post(self, request):
-        itens = ItemInventario.objects.filter(quantidade__gt=0, user=request.user)
-        clientes = Cliente.objects.all()
         cliente_id = request.POST.get('cliente')
         itens_json = request.POST.get('itens')
 
         if not cliente_id:
-            return render(request, 'inventory/realizar_venda.html', {
-                'itens': itens,
-                'clientes': clientes,
-                'erro': 'Selecione um cliente.'
-            })
+            return self.render_erro(request, 'Selecione um cliente.')
 
         if not itens_json:
-            return render(request, 'inventory/realizar_venda.html', {
-                'itens': itens,
-                'clientes': clientes,
-                'erro': 'Nenhum item foi selecionado para a venda.'
-            })
+            return self.render_erro(request, 'Nenhum item foi selecionado para a venda.')
 
         try:
             itens_data = json.loads(itens_json)
         except json.JSONDecodeError:
-            return render(request, 'inventory/realizar_venda.html', {
-                'itens': itens,
-                'clientes': clientes,
-                'erro': 'Erro ao processar os dados dos itens.'
-            })
+            return self.render_erro(request, 'Erro ao processar os dados dos itens.')
 
         if not itens_data:
-            return render(request, 'inventory/realizar_venda.html', {
-                'itens': itens,
-                'clientes': clientes,
-                'erro': 'A lista de itens está vazia.'
-            })
+            return self.render_erro(request, 'A lista de itens está vazia.')
 
-        cliente = Cliente.objects.get(id=cliente_id)
+        try:
+            with transaction.atomic():
+                cliente = Cliente.objects.get(id=cliente_id)
+                venda = Venda.objects.create(cliente=cliente)
 
-        with transaction.atomic():
-            venda = Venda.objects.create(cliente=cliente)
-            for item_info in itens_data:
-                try:
-                    item = ItemInventario.objects.get(id=item_info['item_id'], user=request.user)
+                for item_info in itens_data:
+                    item = InventoryItem.objects.get(id=item_info['item_id'], user=request.user)
                     quantidade = int(item_info['quantidade'])
 
                     if quantidade <= 0:
                         raise ValueError("Quantidade inválida")
-
                     if quantidade > item.quantidade:
                         raise ValueError(f'Estoque insuficiente para o item {item.nome}.')
 
@@ -137,16 +127,21 @@ class RealizarVenda(View):
                     item.quantidade -= quantidade
                     item.save()
 
-                except Exception as e:
-                    transaction.set_rollback(True)
-                    return render(request, 'inventory/realizar_venda.html', {
-                        'itens': itens,
-                        'clientes': clientes,
-                        'erro': f'Erro ao adicionar item: {str(e)}'
-                    })
+        except Exception as e:
+            return self.render_erro(request, f'Erro ao adicionar item: {str(e)}')
 
         messages.success(request, f'Venda #{venda.id} realizada com sucesso!')
-        return redirect('pagina_pedidos')
+        return redirect('realizar_venda')
+
+    def render_erro(self, request, erro_msg):
+        itens = InventoryItem.objects.filter(quantidade__gt=0, user=request.user)
+        clientes = Cliente.objects.all()
+        print("Tá renderizando realizar_venda.html de verdade!")
+        return render(request, 'inventory/realizar_venda.html', {
+            'itens': itens,
+            'clientes': clientes,
+            'erro': erro_msg
+        })
 
 
 class RelatorioSemanalExcel(LoginRequiredMixin, View):
@@ -175,9 +170,7 @@ class RelatorioSemanalExcel(LoginRequiredMixin, View):
         ws.append([])
         ws.append(["", "", "Total Geral:", f"{total_geral:.2f}".replace('.', ',')])
 
-        # Salvar na pasta media/relatorios
-
-
+        
         nome_arquivo = f"relatorio_semanal_{hoje.strftime('%Y%m%d')}.xlsx"
         caminho_pasta = os.path.join(settings.MEDIA_ROOT, 'relatorios')
         os.makedirs(caminho_pasta, exist_ok=True)
@@ -185,11 +178,12 @@ class RelatorioSemanalExcel(LoginRequiredMixin, View):
 
         wb.save(caminho_arquivo)
 
-        # Também retornar como download
+        
         with open(caminho_arquivo, 'rb') as f:
             response = HttpResponse(f.read(), content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
             response['Content-Disposition'] = f'attachment; filename={nome_arquivo}'
             return response
+        
 
 class PaginaPedidos(LoginRequiredMixin, View):
     def get(self, request):
